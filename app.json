@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "myfc_init",
-    "slug": "myfc_init",
+    "name": "SmartFC",
+    "slug": "SmartFC",
     "privacy": "public",
     "sdkVersion": "35.0.0",
     "platforms": [
