@@ -6,17 +6,11 @@ import Separator from '../components/separator';
 import Suggestion from '../components/suggestion';
 import {connect} from 'react-redux';
 import {NavigationActions} from 'react-navigation';
-/** @function mapStateToProps */
-// Return the value state in a list state.
 function mapStateToProps(state){
     return {
         list: state.videos.contenido,
     }
 }
-/**
- * Contains all about information the content REA list screen
- * @class
- */
 class SuggestionList extends Component {
     renderEmpty=()=><Empty text="No hay sugerencias"></Empty>
     itemSeparatos=()=><Separator text="No hay sugerencias"></Separator>

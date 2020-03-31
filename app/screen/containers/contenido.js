@@ -8,11 +8,6 @@ import {Animated} from 'react-native';
 import {connect} from 'react-redux';
 import HeaderReturn from '../../components/headerReturn';
 
-/**
- * Contains all about objects for content REA
- * @class
- */
-
 class contenido extends Component{
     state={
         opacity:new Animated.Value(0),
@@ -30,7 +25,6 @@ class contenido extends Component{
             }
         })
     }
-    /**Load Animation in a Screen*/ 
     componentDidMount(){
         Animated.timing(
             this.state.opacity,{
@@ -39,7 +33,6 @@ class contenido extends Component{
             }
         ).start();
     }
-    /**Render information about a specific Content REA*/ 
     render(){
         console.log('Prueba')
         console.log(this.props.contenido);

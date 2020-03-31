@@ -4,17 +4,12 @@ import { StyleSheet} from 'react-native';
 import API from '../../utils/api';
 import {connect} from 'react-redux';
 import HeaderReturn from '../components/headerReturn';
-
-/**
- * Contains all about information the activities list screen
- * @class
- */
-
 class Home extends Component{
   static navigationOptions =({navigation})=>{
     return{
       header: <HeaderReturn onPress={()=>navigation.goBack()}>Mis Actividades</HeaderReturn>,
     }
+
   }
     constructor(props){
         super(props);
@@ -23,7 +18,6 @@ class Home extends Component{
           activity: [],
         }
       }
-      /** Load all components for activities */
       async componentDidMount(){
         const activity = await API.getActivitiesMovil(this.props.ipconfig, this.props.student.id_colegio, this.props.student.grado_estudiante, this.props.subject.id_materia);
         console.log(activity);
@@ -34,7 +28,6 @@ class Home extends Component{
           }
         })
       }
-      /** Render objects in a Screen of movil. */
     render(){
         return(
             <Fragment>

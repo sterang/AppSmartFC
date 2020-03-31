@@ -9,10 +9,6 @@ import {connect} from 'react-redux';
 import API from '../../../utils/api';
 
 const db = SQLite.openDatabase("db5.db");
-/**
- * Contains all about objects for configure profile
- * @class
- */
 
 class Configure extends Component {
   static navigationOptions =({navigation})=>{
@@ -33,7 +29,6 @@ class Configure extends Component {
     storage: null,
     students: null,
   }
-  /** Load information about a specific student*/ 
   async componentDidMount(){
     console.log(this.props.student.grado_estudiante);
     var query2 = await API.loadSchool(this.props.ipconfig);
@@ -41,7 +36,6 @@ class Configure extends Component {
     this.setState({ students: query })
     this.setState({ school: query2 })
   }
-  /** Update information about a specific student*/ 
   async actualizaUser(){
     //update items set done = 1 where id = ?;
     data= {
@@ -70,7 +64,7 @@ class Configure extends Component {
       null
     );
   }
-  /**Render information about a specific student in a diferent objects*/ 
+  
     render() {      
       var datasSchoolFull = null;
         
@@ -165,7 +159,8 @@ class Configure extends Component {
                 <TextInput style={styles.textData} secureTextEntry={true} onChangeText={(text) => this.setState({password: text})}></TextInput>
           </View>
           <View style={styles.containerText}>
-          <TouchableOpacity style={styles.touchableButtonSignIn} onPress={() => this.actualizaUser()}>
+          <Text style={[styles.textDocument, marginBottom=20]}>Recuerde que para registrarse necesita estar conectado con el servicio, en caso de no estar conectado dirijase a su director o al docente para que se le proporcione la conexión; tambien recuerde que en la aplicación puedes acceder a contenido adicional de manera de invitado. Al momento de Registrarse usted acepta los terminos de uso de datos para futuras investigaciones</Text>
+          <TouchableOpacity style={[styles.touchableButtonSignIn, marginBottom=20,]} onPress={() => this.actualizaUser()}>
                     <LinearGradient
                         colors={['#272d34', '#0f2545', '#272d34']}
                         style={{ padding: 10, alignItems: 'center', borderRadius: 18, height: 40 }}>
@@ -187,6 +182,14 @@ class Configure extends Component {
     }
   }
   const styles = StyleSheet.create({
+    textDocument:{
+      color: '#000',
+      textAlign: 'justify',
+      marginTop: 30,
+      marginRight:15,
+      marginLeft:15,
+      marginBottom:20,
+    },
     container: {
       flex: 1,
       backgroundColor: '#fff',

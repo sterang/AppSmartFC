@@ -2,9 +2,6 @@ import React from 'react';
 import {View, Image, Text, StyleSheet,TouchableOpacity} from 'react-native';
 import { Video } from 'expo-av';
 import {connect} from 'react-redux';
-/** @function Subject */
-// Create the specific elements for subject Screen. 
-
 function Subject(props){
     console.log("Imprimiendo URLs");
     
@@ -27,8 +24,8 @@ function Subject(props){
             </View>
             <View style={styles.right}>
                 <Text style={styles.title}>{props.nombre_materiaActiva}</Text>
-                <Text style={styles.teacher}>Teacher: Diego</Text>
-                <Text style={styles.curso}>Curso: {props.id_grado}</Text>
+                
+                <Text style={styles.curso}>Grado: {props.id_grado}</Text>
             </View>
             </View>
         </TouchableOpacity>

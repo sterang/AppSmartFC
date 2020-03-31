@@ -3,8 +3,6 @@ import {View, TextInput,StyleSheet,TouchableOpacity} from 'react-native';
 import API from '../../utils/api';
 import {connect} from 'react-redux';
 import { Ionicons , Octicons } from '@expo/vector-icons';
-/** @function Search */
-// Create the specific elements for search a content. 
 class Search extends Component{
     state={
         text:''

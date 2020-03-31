@@ -1,9 +1,6 @@
 import React from 'react';
 import {View,Text,StyleSheet} from 'react-native';
 
-/** @function Details */
-// Create the specific elements for the details activity Screen. 
-
 function Details(props){
     return(
         <View>

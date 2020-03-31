@@ -1,8 +1,5 @@
 import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
-/** @function Empty */
-// Create the specific elements for the activity screen in case it is empty. 
-
 function Empty (props){
     return(
         <View style={styles.container}>

@@ -8,11 +8,6 @@ import ContenidoScreen from '../screen/containers/contenido';
 import Search from '../components/search';
 import { Ionicons , Octicons } from '@expo/vector-icons';
 
-/**
- * Contains all about information the content REA screen
- * @class
- */
-
 class Home extends Component{
   static navigationOptions =({navigation})=>{
     return{
@@ -26,7 +21,6 @@ class Home extends Component{
           contenidos: [],
         }
       }
-      /**Load components for play contents */
       async componentDidMount(){
         const contenido = await API.getContent(this.props.ipconfig);
         this.props.dispatch({
@@ -37,7 +31,6 @@ class Home extends Component{
         })
         
       }
-      /** Render objects in a Screen of movil. */
     render(){
       console.log("Prueba")
       console.log(this.props.student);

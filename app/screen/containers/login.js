@@ -1,6 +1,6 @@
 import React,{Component} from 'react';
 import {NavigationActions} from 'react-navigation';
-import {Modal, StyleSheet, Text, View,  Image, TextInput, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import {Modal, StyleSheet, Text,BackHandler, View,  Image, TextInput, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import {connect} from 'react-redux';
 import * as SQLite from 'expo-sqlite';
 //import Header from '../../components/header';
@@ -8,10 +8,9 @@ import HeaderLogin from '../../components/headerLogin';
 import API from '../../../utils/api';
 import { LinearGradient } from 'expo-linear-gradient';
 const db = SQLite.openDatabase("db5.db");
-/**
- * Contains all about information for Login user.
- * @class
- */
+function goodBye(){
+  BackHandler.exitApp();
+}
 class Login extends Component {
   static navigationOptions =({navigation})=>{
     return{
@@ -25,11 +24,9 @@ class Login extends Component {
     modalVisible: false,
     ipconfig: null
   }
-  /** Create a state for modal */
   setModalVisible(visible) {
     this.setState({ modalVisible: visible });
   }
-  /** Login a student about database */
   async signIn(data){
     db.transaction(tx => {
       tx.executeSql("select * from students", [], (_, { rows:{ _array } }) =>
@@ -38,18 +35,12 @@ class Login extends Component {
       );
     });
     dataStudents= this.state.storage;
-    //var data = {
-    //  correo_electronico: this.state.email,
-    //  contrasena: this.state.password
-    //}
-    //var query = await API.loginStudent(data);
     console.log("Filtro");
     var dataCompleted =null;
     console.log(dataStudents.length);
     if(dataStudents.length==0){
     }else{
       for (var i = 0; i<=dataStudents.length-1;i++){
-        //dataStudents[i].correo_electronico
         if (dataStudents[i].correo_electronico == this.state.email){
           console.log("Entro")
           if(dataStudents[i].contrasena == this.state.password){
@@ -100,8 +91,9 @@ class Login extends Component {
     }
     console.log("Filtro Final");
   }
-  /** Load a Student in a specific state */
   componentDidMount(){
+    //Aqui Hay un cambio si se aprueba 
+    
     this.props.dispatch({
       type: 'SET_STUDENT',
       payload: {
@@ -118,25 +110,50 @@ class Login extends Component {
           );
       });
   }
-  /** Load a form about registration*/
   registrateForm(){
     this.props.dispatch(NavigationActions.navigate({
       routeName: 'Registro'
   }))
   }
-  /** Load a form about IP*/
-  registrateIP(){
+  
+  async registrateIP(){
     ipConfigSend = this.state.ipconfig;
-    this.props.dispatch({
-      type: 'SET_IPCONFIG',
-      payload: {
-        ipconfig: ipConfigSend,
-      }
-    })
-    
+    console.log(ipConfigSend);
+    var answer = 0;
+    answer = await API.getConection(ipConfigSend);
+    console.log(answer);
+    if(answer==1){
+      console.log("Hace Ping")
+      this.props.dispatch({
+        type: 'SET_IPCONFIG',
+        payload: {
+          ipconfig: ipConfigSend,
+        }
+      })
+      Alert.alert(
+        'Conexión',
+        'La conexión con el servidor fue exitosa.',
+        [
+          { text: 'OK', onPress: () => console.log('OK Pressed') },
+        ],
+        { cancelable: false }
+    );
     this.setModalVisible(!this.state.modalVisible);
+    }else{
+      Alert.alert(
+        'Conexión',
+        'La conexión con el servidor es erronea por favor verifica tu IP',
+        [
+          { text: 'OK', onPress: () => console.log('OK Pressed') },
+        ],
+        { cancelable: false }
+      );
+    }
+    
+    
+    
   }
-  /** Load all users from server to a database in mobile*/
+
   async sincronizarDatas(){
     const query = await API.allStudent(this.props.ipconfig);
     //console.log(query)
@@ -159,8 +176,15 @@ class Login extends Component {
       console.log(apellido_estudiante);
       this.envioDatosSQL(id_estudiante,id_colegio,nombre_estudiante,nombre_usuario,tipo_usuario,grado_estudiante,curso_estudiante,apellido_estudiante,contrasena,correo_electronico);
     }
+    Alert.alert(
+      'Sincronización',
+      'La sincronización de los usuarios fue realizada',
+      [
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ],
+      { cancelable: false }
+    );
   }
-  /** Send data to SQL query*/
   envioDatosSQL(id_estudiante,id_colegio,nombre_estudiante,nombre_usuario,tipo_usuario,grado_estudiante,curso_estudiante,apellido_estudiante,contrasena,correo_electronico){
     db.transaction(
       tx => {
@@ -170,10 +194,9 @@ class Login extends Component {
         );
       },
       null,
-      null
+      this.consulta()
     );
   }
-  /** Update data to SQL query*/
   consulta(){
     db.transaction(tx => {
       tx.executeSql("select * from students", [], (_, { rows:{ _array } }) =>
@@ -182,7 +205,6 @@ class Login extends Component {
       );
     });
   }
-  /** Login Admin*/
   async loginAdmin(){
     var data = {
       nombre_usuario:this.state.email,
@@ -198,7 +220,6 @@ class Login extends Component {
       console.log("Pailas")
     }
   }
-  /** Render information about a specific student in a diferent objects*/ 
   render() {
       return (
         <View style={styles.container}>

@@ -1,10 +1,6 @@
 import React from 'react';
 import {View, Image, Text, StyleSheet,TouchableOpacity} from 'react-native';
 import { Video } from 'expo-av';
-
-/** @function Activity */
-// Create the specific elements for the activities screen. 
-
 function Activity(props){
     return(
         <TouchableOpacity
@@ -13,8 +9,8 @@ function Activity(props){
             <View style={styles.container}>
             <View style={styles.right}>
                 <Text style={styles.title}>{props.titulo_actividad}</Text>
-                <Text style={styles.teacher}>Teacher: Diego</Text>
-                <Text style={styles.curso}>Curso: {props.id_grado}</Text>
+                
+                <Text style={styles.curso}>Grado: {props.id_grado}</Text>
             </View>
             </View>
         </TouchableOpacity>

@@ -5,14 +5,10 @@ import { MaterialIcons, Octicons } from '@expo/vector-icons';
 import Layout from '../components/layout';
 import shorthash from 'shorthash';
 import * as FileSystem from 'expo-file-system';
+import {NavigationActions} from 'react-navigation';
 import {connect} from 'react-redux';
 import * as SQLite from 'expo-sqlite';
 const db = SQLite.openDatabase("db5.db");
-
-/**
- * Contains all about objects for player a video content
- * @class
- */
 
 class Player extends Component{
   constructor(props) {
@@ -24,14 +20,15 @@ class Player extends Component{
     storage: null,
     storageFilter:null,
     storageFlats: null,
-
+    controls: false,
+    source: null
   }
-  /** Play and Pause Process. */
+  
   handlePlayAndPause = async() => {  
-    console.log("Entro a Pausar el video");
-    console.log(this.state.shouldPlay);
+    //console.log("Entro a Pausar el video");
+    //console.log(this.state.shouldPlay);
     if(this.state.shouldPlay==false){
-      console.log("Le dio Play al video")
+      //console.log("Le dio Play al video")
       this.almacenaMetrica();
     }
     this.setState((prevState) => ({
@@ -40,14 +37,11 @@ class Player extends Component{
     
     
   }
-  /** Volume about music player. */
   handleVolume = async() => {
     this.setState(prevState => ({
       mute: !prevState.mute,
     }));
   }
-  /** Load and download information about music or video. */
-
   componentDidMount = async () => {
     db.transaction(tx => {
       tx.executeSql(
@@ -78,23 +72,31 @@ class Player extends Component{
     const name = shorthash.unique(uri);
     const path = `${FileSystem.cacheDirectory}${name}`;
     const video = await FileSystem.getInfoAsync(path);
+    console.log("Antes de Entrar al Video");
     if (video.exists) {
+      console.log(video.uri)
+      console.log("Entra al Video");
       this.setState({
         source: {
           uri: video.uri,
+          //uri: 'file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540steran%252Fmyfc_init/Zu9oFD',
         }
       })
+      console.log("Imprimiendo Source")
+      console.log(this.state.source);
       return;
     }
+    console.log("Descarga Nuevo");
     const newVideo = await FileSystem.downloadAsync(uri, path);
     this.setState({
       source: {
         uri: newVideo.uri,
+        //uri: 'file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540steran%252Fmyfc_init/Zu9oFD',
       }
     });
     
   }
-/** Storage a Metric in a database for a specific student. */
+
   almacenaMetrica(){
     var date = new Date().getDate();
     var month = new Date().getMonth() + 1;
@@ -110,16 +112,16 @@ class Player extends Component{
           (_, { rows: { _array } }) => this.setState({ storageFilter: _array })
         );
     });
-    console.log("Storage Print")
-    console.log(this.state.storageFilter);
+    //console.log("Storage Print")
+    //console.log(this.state.storageFilter);
     var storageFilterGood = this.state.storageFilter;
     var storageFilter = storageFilterGood.reverse();
-    console.log("Imprimiendo Resultado")
+    //console.log("Imprimiendo Resultado")
     //console.log(storageFilter);
 
-    console.log(storageFilterGood);
+    //console.log(storageFilterGood);
     if(storageFilter.length==0){
-      console.log("Entro a Cero")
+      //console.log("Entro a Cero")
         resultado = [{
           check_a1: 0,
           check_a2: 0,
@@ -156,7 +158,7 @@ class Player extends Component{
     db.transaction(
         tx => {
           tx.executeSql("insert into events (data_start, hour_start, data_end, hour_end, id_actividad, id_estudiante, check_download, check_inicio, check_fin, check_answer, count_video, check_video, check_document, check_a1, check_a2, check_a3, check_profile, check_Ea1, check_Ea2, check_Ea3) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?)",
-           [dataComplete,hoursComplete,dataComplete,hoursComplete, this.props.activity.id_actividad, this.props.student.id_estudiante,resultado[0].check_download,resultado[0].check_inicio,0,resultado[0].check_answer,resultado[0].count_video+1,1,0,resultado[0].check_a1,resultado[0].check_a2,resultado[0].check_a3,0,resultado[0].check_Ea1,resultado[0].check_Ea2,resultado[0].check_Ea3]);
+           [dataComplete,hoursComplete,dataComplete,hoursComplete, this.props.activity.id_actividad, this.props.student.id_estudiante,resultado[0].check_download,1,0,resultado[0].check_answer,resultado[0].count_video+1,1,0,resultado[0].check_a1,resultado[0].check_a2,resultado[0].check_a3,0,resultado[0].check_Ea1,resultado[0].check_Ea2,resultado[0].check_Ea3]);
         },
         null,
         null
@@ -171,7 +173,6 @@ class Player extends Component{
     //console.log(this.state.storage [this.state.storage.length-1]);
     this.update();    
 }
-/** Update a Flat for a specific metric. */
 updateFlat(){
   db.transaction(tx => {
       tx.executeSql(
@@ -180,9 +181,8 @@ updateFlat(){
         (_, { rows: { _array } }) => this.setState({ storageFlats: _array })
       );
     });
-  console.log(this.state.storageFlats);
+  //console.log(this.state.storageFlats);
 }
-/** Update a specific metric. */
 update() {
     db.transaction(tx => {
       tx.executeSql(
@@ -191,7 +191,7 @@ update() {
         (_, { rows: { _array } }) => this.setState({ storage: _array })
       );
     });
-    console.log(this.state.storage[this.state.storage.length-1]);
+    //console.log(this.state.storage[this.state.storage.length-1]);
     db.transaction(
         tx => {
           tx.executeSql(`insert into flatEvent (id_evento, upload) values (?, ?)`,
@@ -208,11 +208,31 @@ update() {
         );
       });
       this.updateFlat();
-}
-/** Render objects in a Screen of movil. */
+  }
+  continuarContenido(){
+    this.setState((prevState) => ({
+      shouldPlay: false
+   }));
+   
+    this.props.dispatch({
+        type:'SET_SELECT_ACTIVITIES_SUBJECT_LIST',
+        payload:{
+            activity: this.props.activity,
+         }
+    })
+    this.props.dispatch(NavigationActions.navigate({
+        routeName: 'TestActivity'
+    }))
+  }
+  pruebaLandsCape(){
+
+  }
   render() {
     //const url = this.props.descripcion_CREA;
     //console.log(this.props.descripcion_CREA);
+    //console.log(this.state.total);
+    //console.log(this.state.percentage);
+    //console.log(this.state.stateVideo);
     return (
       <View>
         <Video
@@ -233,8 +253,8 @@ update() {
             onPress={this.handlePlayAndPause}
           />
         </View>
-        <Button title="Envia Dato" onPress={()=>this.almacenaMetrica()}/>
 
+        <Button title="Continua Aprendiendo" onPress={()=>this.continuarContenido()}/>
       </View>
     );
   }

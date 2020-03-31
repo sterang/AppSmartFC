@@ -14,10 +14,6 @@ import {NavigationActions} from 'react-navigation';
 import Reader from '../../containers/reader-activity';
 import HeaderReturn from '../../components/headerReturn';
 
-/**
- * Contains all about information for play a content.
- * @class
- */
 class playContent extends Component{
     state={
         opacity:new Animated.Value(0),
@@ -27,7 +23,6 @@ class playContent extends Component{
             header: (<HeaderReturn onPress={()=>navigation.goBack()}>Visualiza tu contenido</HeaderReturn>)
         }
     }
-    /** Load Animation for Screen. */
     componentDidMount(){
         Animated.timing(
             this.state.opacity,{
@@ -36,7 +31,6 @@ class playContent extends Component{
             }
         ).start();
     }
-    /** Continue with another moment for activity. */
     continuarContenido(){
         this.props.dispatch({
             type:'SET_SELECT_ACTIVITIES_SUBJECT_LIST',
@@ -48,7 +42,6 @@ class playContent extends Component{
             routeName: 'TestActivity'
         }))
     }
-    /** Render objects in a Screen of movil. */
     render(){
         console.log("Abriendo PlayContents")
         console.log(this.props.activity.video);
@@ -60,7 +53,7 @@ class playContent extends Component{
                 <ContenidoLayout>
                     <Player {...this.props.activity}/>
                 </ContenidoLayout>
-                <Button title="Continua Aprendiendo" onPress={()=>this.continuarContenido()}/>
+                
             </Animated.View>
         );
         }else if(this.props.activity.documento=='1'){

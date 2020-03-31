@@ -9,8 +9,6 @@ import {NavigationActions} from 'react-navigation';
 import * as SQLite from 'expo-sqlite';
 import API from '../../utils/api';
 const db = SQLite.openDatabase("db5.db");
-/** @function mapStateToProps */
-// Return the value state in a subject, ip and list state.
 function mapStateToProps(state){
     return {
         list: state.videos.subject,
@@ -18,10 +16,6 @@ function mapStateToProps(state){
         student:state.videos.selectedStudent
     }
 }
-/**
- * Contains all about information the content REA list screen
- * @class
- */
 class SuggestionList extends Component {
     state={
         storage: null,
@@ -61,8 +55,20 @@ class SuggestionList extends Component {
         });
 
     }
+    async doubleSend(){
+        this.sendServer();
+        this.sendServer();
+        this.sendServer();
+    }
     async sendServer (){
         //this.consulta();
+        const subject = await API.getCourses(this.props.ipconfig, this.props.student.grado_estudiante, this.props.student.id_colegio);
+        this.props.dispatch({
+          type:'SET_ACTIVITIES_LIST',
+          payload:{
+            subject
+          }
+        });
         db.transaction(tx => {
             tx.executeSql(
               `select * from events ;`,
@@ -88,7 +94,7 @@ class SuggestionList extends Component {
                     if(Flats[i].id_evento == data[j].id_evento){
                         var queryApi = await API.loadEventsLast(this.props.ipconfig);
                         queryApi = queryApi+1;
-                        var id_estudianteF = ""+this.props.student.id_colegio + this.props.student.id_estudiante + queryApi;
+                        var id_estudianteF = ""+ this.props.student.id_estudiante + queryApi;
                         var id_estudianteF = parseInt(id_estudianteF);
                         data[j].id_evento= id_estudianteF;
                         var id_eventoFs = Flats[j].id_evento;
@@ -140,7 +146,7 @@ class SuggestionList extends Component {
         console.log("Esto es para el filtro");
         data = this.props.list;
         return(
-            <Layout title="Tus Materias" onPress={()=>this.sendServer()}>    
+            <Layout title="Materias" onPress={()=>this.doubleSend()}>    
             
             <FlatList
                 keyExtractor={this.keyExtractor}

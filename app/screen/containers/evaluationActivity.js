@@ -8,14 +8,8 @@ import {connect} from 'react-redux';
 import RadioForm, {RadioButton, RadioButtonInput, RadioButtonLabel} from 'react-native-simple-radio-button';
 import * as SQLite from 'expo-sqlite';
 import API from '../../../utils/api';
-//import Audio from '../../containers/audio-activity';
-
+import RadioButtons from '../components/RadioButtons';
 const db = SQLite.openDatabase("db5.db");
-
-/**
- * Contains all about objects for Evaluation Activity
- * @class
- */
 
 class evaluationActivity extends Component{
     state={
@@ -27,12 +21,21 @@ class evaluationActivity extends Component{
         storageFilter:null,
         storageFlats: null,
     }
+    getResponse(value){
+      this.setState({value1:value});
+    }
+    getResponse2(value){
+      this.setState({value2:value});
+    }
+    getResponse3(value){
+      this.setState({value3:value});
+    }
+
     static navigationOptions=({navigation})=>{
         return{ 
             header: (<HeaderReturn onPress={()=>navigation.goBack()}>Realiza tu Examen</HeaderReturn>)
         }
     }
-    /** Load all components for evaluation */
     componentDidMount(){
         Animated.timing(
             this.state.opacity,{
@@ -63,7 +66,6 @@ class evaluationActivity extends Component{
         });
 
     }
-    /** Update Flats for metrics */
     updateFlat(){
         db.transaction(tx => {
             tx.executeSql(
@@ -74,7 +76,6 @@ class evaluationActivity extends Component{
           });
         console.log(this.state.storageFlats);
     }
-    /** Update metrics in a database*/
     update() {
         db.transaction(tx => {
           tx.executeSql(
@@ -101,7 +102,6 @@ class evaluationActivity extends Component{
           });
           this.updateFlat();
       }
-      /** Storage a Evaluation with metrics*/
     storageTest(){
         var date = new Date().getDate();
         var month = new Date().getMonth() + 1;
@@ -172,8 +172,15 @@ class evaluationActivity extends Component{
         });
         //console.log(this.state.storage [this.state.storage.length-1]);
         this.update();
+        Alert.alert(
+          'Almacenamiento Exitoso',
+          'Sus respuestas han sido almacenadas recuerde sincronizar con su servidor cuando este en el colegio',
+          [
+            { text: 'OK', onPress: () => console.log('OK Pressed') },
+          ],
+          { cancelable: false }
+      );
     }
-    /** Update Metrics in a database in a States*/
     consulta(){  
       db.transaction(tx => {
             tx.executeSql(
@@ -189,7 +196,6 @@ class evaluationActivity extends Component{
       });
       console.log(this.state.storageFlats);
     }
-    /** Send information to a server with all metrics about one activity and specific student*/
     async sendServer (){
         //this.consulta();
         db.transaction(tx => {
@@ -219,7 +225,7 @@ class evaluationActivity extends Component{
                         //var idEvens = queryApi.length;
                         console.log("Existe un error")
                         console.log(queryApi.length);
-                        var id_estudianteF = ""+this.props.student.id_colegio + this.props.student.id_estudiante + queryApi;
+                        var id_estudianteF = ""+ this.props.student.id_estudiante + queryApi;
                         var id_estudianteF = parseInt(id_estudianteF);
                         data[j].id_evento= id_estudianteF;
                         var id_eventoFs = Flats[j].id_evento;
@@ -241,56 +247,47 @@ class evaluationActivity extends Component{
         }
         console.log(data);
         console.log(query2);
+        Alert.alert(
+          'Sincronización exitosa',
+          'La sincronización de respuestas fue exitosa',
+          [
+              { text: 'OK', onPress: () => console.log('OK Pressed') },
+          ],
+          { cancelable: false }
+      );
     }
-    /** Render objects in a Screen of movil. */
     render(){
         console.log("Trayendo al Estudiante");
         console.log(this.props.student.id_estudiante);
         var Question_One = [
-            {label: this.props.activity.EA11, value: 1 },
-            {label: this.props.activity.EA12, value: 2 },
-            {label: this.props.activity.EA13, value: 3 },
-            {label: this.props.activity.EA14, value: 4 }
+            {text: this.props.activity.EA11, key: 1 },
+            {text: this.props.activity.EA12, key: 2 },
+            {text: this.props.activity.EA13, key: 3 },
+            {text: this.props.activity.EA14, key: 4 }
         ];
         var Question_Two = [
-            {label: this.props.activity.EA21, value: 1 },
-            {label: this.props.activity.EA22, value: 2 },
-            {label: this.props.activity.EA23, value: 3 },
-            {label: this.props.activity.EA24, value: 4 }
+            {text: this.props.activity.EA21, key: 1 },
+            {text: this.props.activity.EA22, key: 2 },
+            {text: this.props.activity.EA23, key: 3 },
+            {text: this.props.activity.EA24, key: 4 }
         ];
         var Question_Three = [
-            {label: this.props.activity.EA31, value: 1 },
-            {label: this.props.activity.EA32, value: 2 },
-            {label: this.props.activity.EA33, value: 3 },
-            {label: this.props.activity.EA34, value: 4 }
+            {text: this.props.activity.EA31, key: 1 },
+            {text: this.props.activity.EA32, key: 2 },
+            {text: this.props.activity.EA33, key: 3 },
+            {text: this.props.activity.EA34, key: 4 }
         ];
         console.log("Abriendo PlayContents")
         console.log(this.props.activity.video);
         return (
             <ScrollView style={styles.container}>
                 <Text style={styles.texto}>{this.props.activity.EQ1}</Text>
-                <RadioForm
-                    radio_props={Question_One}
-                    initial={0}
-                    onPress={(value) => { this.setState({ value1: value }) }}
-                    labelColor={'#9C9C9C'}
-                />
+                <RadioButtons options={Question_One} callback={this.getResponse.bind(this)}/>
                 <Text style={styles.texto}>{this.props.activity.EQ2}</Text>
-                <RadioForm
-                    radio_props={Question_Two}
-                    initial={0}
-                    onPress={(value) => { this.setState({ value2: value }) }}
-                    labelColor={'#9C9C9C'}
-                />
+                <RadioButtons options={Question_Two} callback={this.getResponse2.bind(this)}/>
                 <Text style={styles.texto}>{this.props.activity.EQ3}</Text>
-                <RadioForm
-                    radio_props={Question_Three}
-                    initial={0}
-                    onPress={(value) => { this.setState({ value3: value }) }}
-                    labelColor={'#9C9C9C'}
-                />
-                <Button title="Enviar" style={styles.buttonstyle} onPress={()=>this.storageTest()}/>
-                <Button title="Consulta" style={styles.buttonstyle} onPress={()=>this.consulta()}/>
+                <RadioButtons options={Question_Three} callback={this.getResponse3.bind(this)}/>
+                <Button title="Guardar" style={styles.buttonstyle} onPress={()=>this.storageTest()}/>
                 <Button title="Sincronizar" style={styles.buttonstyle} onPress={()=>this.sendServer()}/>
             </ScrollView>
         );

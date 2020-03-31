@@ -10,10 +10,6 @@ import {connect} from 'react-redux';
 
 import * as SQLite from 'expo-sqlite';
 const db = SQLite.openDatabase("db5.db");
-/**
- * Contains all about objects for player a reader content
- * @class
- */
 
 //const PdfReader = ({ url: uri }) => <WebView style={{ flex: 1 }} source={{ uri }} />
 class Player extends Component{
@@ -27,7 +23,6 @@ class Player extends Component{
       storageFilter:null,
       storageFlats: null,
     }
-    /** Load and download information about music or video. */
     componentDidMount(){
       db.transaction(tx => {
         tx.executeSql(
@@ -51,7 +46,6 @@ class Player extends Component{
         );
       });  
     }
-    /** Storage a Metric in a database for a specific student. */
     almacenaMetrica(){
       var date = new Date().getDate();
       var month = new Date().getMonth() + 1;
@@ -128,7 +122,6 @@ class Player extends Component{
       //console.log(this.state.storage [this.state.storage.length-1]);
       this.update();    
   }
-  /** Update a Flat for a specific metric. */
   updateFlat(){
     db.transaction(tx => {
         tx.executeSql(
@@ -139,7 +132,6 @@ class Player extends Component{
       });
     console.log(this.state.storageFlats);
   }
-  /** Update a specific metric. */
   update() {
       db.transaction(tx => {
         tx.executeSql(
@@ -175,7 +167,6 @@ class Player extends Component{
       Linking.openURL(uri);
       this.props.onPress && this.props.onPress();
     };
-    /** Render objects in a Screen of movil. */
     render() {
       //const url = this.props.descripcion_CREA;
       //console.log(this.props.descripcion_CREA);

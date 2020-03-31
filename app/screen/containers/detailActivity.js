@@ -10,10 +10,7 @@ import * as SQLite from 'expo-sqlite';
 const db = SQLite.openDatabase("db5.db");
 //import * as FileSystem from 'expo-file-system';
 //import shorthash from 'shorthash';
-/**
- * Contains all about objects for player a detail content
- * @class
- */
+
 class detailActivity extends Component{
     state={
         opacity:new Animated.Value(0),
@@ -27,7 +24,6 @@ class detailActivity extends Component{
             header: (<HeaderReturn onPress={()=>navigation.goBack()}>Descripción de tu actividad</HeaderReturn>)
         }
     }
-    /** Load and download information about music or video. */
     componentDidMount(){
         Animated.timing(
             this.state.opacity,{
@@ -57,7 +53,6 @@ class detailActivity extends Component{
               );
         });
     }
-    /** Continue with another content of activity*/
     continuarContenido(){
         this.props.dispatch({
             type:'SET_SELECT_ACTIVITIES_SUBJECT_LIST',
@@ -70,7 +65,6 @@ class detailActivity extends Component{
             routeName: 'PlayContent'
         }))
     }
-    /** Update a Flat for a specific metric. */
     updateFlat(){
       db.transaction(tx => {
           tx.executeSql(
@@ -81,7 +75,6 @@ class detailActivity extends Component{
         });
       console.log(this.state.storageFlats);
   }
-  /** Update a Database. */
     update() {
         db.transaction(tx => {
           tx.executeSql(
@@ -108,7 +101,6 @@ class detailActivity extends Component{
           });
           this.updateFlat();
     }
-    /** Storage a Metric in a database for a specific student. */
     almacenaMetrica(){
         var date = new Date().getDate();
         var month = new Date().getMonth() + 1;
@@ -184,7 +176,6 @@ class detailActivity extends Component{
         //console.log(this.state.storage [this.state.storage.length-1]);
         this.update();    
     }
-    /** Render objects in a Screen of movil. */
     render(){
         console.log(this.state.source);
         return(
@@ -194,7 +185,7 @@ class detailActivity extends Component{
                 <ContenidoLayout>
                     <Details {...this.props.activity} />
                 </ContenidoLayout>
-                <Button title="Envia Dato" onPress={()=>this.almacenaMetrica()}/>
+                
                 <Button title="Continua Aprendiendo" onPress={()=>this.continuarContenido()}/>
             </Animated.View>
         );

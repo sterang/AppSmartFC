@@ -6,21 +6,15 @@ import Separator from '../components/separator';
 import Suggestion from '../components/activity';
 import {connect} from 'react-redux';
 import {NavigationActions} from 'react-navigation';
-/** @function mapStateToProps */
-// Return the value state in a subject and list state. 
+import * as SQLite from 'expo-sqlite';
+
 function mapStateToProps(state){
     return {
         subject:state.videos.selectedSubjects,
-        list: state.videos.activity
+        list: state.videos.activity,
     }
 }
-
-/**
- * Contains all about information the activities list screen
- * @class
- */
 class SuggestionList extends Component {
-    
     renderEmpty=()=><Empty text="No hay actividades asociadas a la materia"></Empty>
     itemSeparatos=()=><Separator text="No hay actividades asociadas a la materia"></Separator>
     viewContenido=(item)=>{
@@ -35,6 +29,9 @@ class SuggestionList extends Component {
             routeName: 'SelectMoment'
         }))
     }
+    state = {
+        storage: [],
+    }
     renderItem=({item})=>{
         return(
             <Suggestion {...item}
@@ -42,14 +39,68 @@ class SuggestionList extends Component {
             />
         )
     }
+    async componentDidMount(){
+        var data = [];
+        var id_materia= this.props.subject.id_materiaActiva;
+        console.log("ID_Materia")
+        console.log(id_materia);
+        console.log("Esto es para el filtro");
+        async function esActividad(elemento) {
+            console.log("Imprimiendo IDs_MAteria de las actividades")
+            console.log(elemento.id_materia)
+            if (elemento.id_materiaActiva==id_materia){
+                //console.log('_____________________________');
+                data.push(elemento);
+                //console.log(data);
+            }else {
+                //data.push(elemento);
+                console.log('No entra');
+            }
+        }
+        await this.props.list.filter(esActividad);
+        console.log("Imprimiendo filtro")
+        this.setState({ storage: data })
+        console.log(this.state.storage);
+    }
+    async doubleSend(){
+        this.filtro();
+    }
+    async filtro (){
+        var data = [];
+        var id_materia= this.props.subject.id_materiaActiva;
+        console.log("ID_Materia")
+        console.log(id_materia);
+        console.log("Esto es para el filtro");
+        async function esActividad(elemento) {
+            console.log("Imprimiendo IDs_MAteria de las actividades")
+            console.log(elemento.id_materia)
+            if (elemento.id_materiaActiva==id_materia){
+                //console.log('_____________________________');
+                data.push(elemento);
+                //console.log(data);
+            }else {
+                //data.push(elemento);
+                console.log('No entra');
+            }
+        }
+        await this.props.list.filter(esActividad);
+        console.log("Imprimiendo filtro")
+        this.setState({ storage: data })
+        console.log(this.state.storage);
+    }
     keyExtractor = item=>item.id_actividad.toString()
-    /** Render objects in a Screen of movil. */
     render(){
+        //console.log("Imprimiendo la materia Seleccionada");
+        //console.log(this.props.subject.id_materia);
+        //console.log("Terminando la materia seleccionada");
         var data = [];
         var id_materia= this.props.subject.id_materia;
-        data = this.props.list;
+        //console.log("Esto es para el filtro");
+        //data = this.props.list;
+        data = this.state.storage;
+        //this.props.list.filter(esActividad);
         return(
-            <Layout title="Tus Actividades">
+            <Layout title="Tus Actividades"onPress={()=>this.doubleSend()}>
             <FlatList
                 keyExtractor={this.keyExtractor}
                 data={data}

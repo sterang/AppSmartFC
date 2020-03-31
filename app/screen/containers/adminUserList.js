@@ -7,9 +7,6 @@ import Suggestion from '../components/adminUserComponent';
 import {connect} from 'react-redux';
 import {NavigationActions} from 'react-navigation';
 
-/** @function mapStateToProps */
-// Return the value state in a subject,duda and ip state.
-
 function mapStateToProps(state){
     return {
         students: state.videos.students,
@@ -17,11 +14,6 @@ function mapStateToProps(state){
         ipconfig: state.videos.selectedIPConfig
     }
 }
-/**
- * Contains all about information the Students and create objects.
- * @class
- */
-
 class SuggestionList extends Component {
     renderEmpty=()=><Empty text="No hay materias asociadas al colegio"></Empty>
     itemSeparatos=()=><Separator text="No hay materias asociadas al colegio"></Separator>
@@ -46,7 +38,6 @@ class SuggestionList extends Component {
         )
     }
     keyExtractor = item=>item.id_estudiante.toString()
-    /** Render objects in a Screen of movil. */
     render(){
         var data = [];
         //console.log("Esto es para el filtro");

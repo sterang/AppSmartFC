@@ -9,11 +9,6 @@ import * as SQLite from 'expo-sqlite';
 
 const db = SQLite.openDatabase("db5.db");
 
-/**
- * Contains all about select moment in a activity.
- * @class
- */
-
 class selectMoment extends Component{
     static navigationOptions=({navigation})=>{
         return{
@@ -25,11 +20,10 @@ class selectMoment extends Component{
         pregunta: null,
         storage: null
     }
-    /** Visible of modal */
     setModalVisible(visible) {
         this.setState({ modalVisible: visible });
     }
-    /** Load the first moment in the activity */
+      
     detailActivity(){
         this.props.dispatch({
             type:'SET_SELECT_ACTIVITIES_SUBJECT_LIST',
@@ -41,7 +35,6 @@ class selectMoment extends Component{
             routeName: 'DetailActivitySubj'
         }))
     }
-    /** Load the second moment in the activity and check if it is already */
     excersiceActivity(){
         if(this.props.activity.taller == 1){
             this.props.dispatch({
@@ -70,11 +63,9 @@ class selectMoment extends Component{
         }
         
     }
-    /** Show modal for a doubt */
     doubtActivity(){
         this.setModalVisible(true);
     }
-    /** Load the third moment in the activity and check if it is already */
     evaluationActivity(){
         if(this.props.activity.evaluacion == 1){
             this.props.dispatch({
@@ -101,8 +92,9 @@ class selectMoment extends Component{
                 { cancelable: false }
               );
         }
+        
+
     }
-    /** Load all of components for doubts */
     componentDidMount(){
         db.transaction(tx => {
             tx.executeSql(
@@ -114,7 +106,6 @@ class selectMoment extends Component{
             );
         });
     }
-    /** Create a document o a sentence for a doubt */
     registrateDoubt(){
         db.transaction(tx => {
             tx.executeSql("select * from doubts", [], (_, { rows:{ _array } }) =>
@@ -140,14 +131,21 @@ class selectMoment extends Component{
         }
         db.transaction(tx => {
             tx.executeSql("insert into doubts (id_duda, id_actividad, id_estudiante, pregunta, respuesta, estado_duda) values (?, ?, ?, ?, ?, ?)",
-             [id_duda,this.props.activity.id_actividad, this.props.student.id_estudiante, this.state.pregunta,"", 1]);
+             [id_duda,this.props.activity.id_actividad, this.props.student.id_estudiante, this.state.pregunta,"", 0]);
             tx.executeSql("select * from doubts", [], (_, { rows:{ _array } }) =>
                 this.setState({ storage: _array }),
                 console.log(this.state.storage)
             );
         });
+        Alert.alert(
+            'Almacenamiento',
+            'Su duda ha sido almacenada por favor recuerde sincronizarla para tener alguna respuesta.',
+            [
+              { text: 'OK', onPress: () => console.log('OK Pressed') },
+            ],
+            { cancelable: false }
+        );
     }
-    /** Send information about doubts */
     async sincronizaDoubt(){
         db.transaction(tx => {
             tx.executeSql("select * from doubts", [], (_, { rows:{ _array } }) =>
@@ -159,12 +157,12 @@ class selectMoment extends Component{
         console.log("Imprimiendo StorageDoubts");
         console.log(storageDoubts[0].id_duda);
         for (var i=0;i<storageDoubts.length;i++){
-            if (storageDoubts[i].estado_duda==1){
+            if (storageDoubts[i].estado_duda==0){
                 var dataDoubt= storageDoubts[i];
                 var creacionDuda = await API.generateDoubt(this.props.ipconfig,dataDoubt);      
                 var id_dudosa = storageDoubts[i].id_duda;
                 db.transaction(tx => {
-                    tx.executeSql("update doubts set estado_duda = ? where id_duda = ? ", [0, id_dudosa]);
+                    tx.executeSql("update doubts set estado_duda = ? where id_duda = ? ", [1, id_dudosa]);
                     tx.executeSql("select * from doubts", [], (_, { rows:{ _array } }) =>
                         this.setState({ storage: _array }),
                         console.log(this.state.storage)
@@ -173,15 +171,23 @@ class selectMoment extends Component{
                 //tx.executeSql("update students set nombre_estudiante = ? , apellido_estudiante = ?, grado_estudiante = ?,curso_estudiante = ?, id_colegio = ?, nombre_usuario = ?, contrasena = ?, correo_electronico = ? where id_estudiante = ? ", [this.state.name,this.state.last_name,this.state.grado, 1, this.state.schoolSelected, this.state.user, this.state.password, this.state.email, this.props.student.id_estudiante]);
             }
         }
-        
+        Alert.alert(
+            'Sincronización Exitosa',
+            'Sus dudas fueron enviadas dentro de poco tendra una respuesta.',
+            [
+              { text: 'OK', onPress: () => console.log('OK Pressed') },
+            ],
+            { cancelable: false }
+        );
         //var creacionDuda = await API.generateDoubt(this.props.ipconfig,dataDoubt);
         //console.log(this.state.storage);
     }
-    /** Render objects in a Screen of movil. */
     render() {
+        console.log(this.props.activity);
         return (
           <View style={styles.container}>
-              <View style={styles.box0}>
+            <View style={styles.box0}>
+            <Text style={styles.textActivity}>Nombre de la Actividad: {this.props.activity.titulo_actividad}</Text>
             <Text style={styles.textSelected}>Selecciona un Lugar para continuar: </Text>
             <TouchableOpacity style={styles.touchableButtonSignIn} onPress={() => this.detailActivity()}>
                     <LinearGradient
@@ -360,9 +366,17 @@ const styles = StyleSheet.create({
 
     },
     textSelected:{
-        marginTop: 50,
+        marginTop: 20,
         marginBottom:25,
+        marginLeft:10,
         fontSize: 18,
+        fontWeight: 'bold',
+        color: '#2C2C2C',
+    },
+    textActivity:{
+        marginLeft: 5,
+        marginTop: 35,
+        fontSize: 15,
         fontWeight: 'bold'
     },
     buttonSignIn:{
@@ -375,7 +389,9 @@ const styles = StyleSheet.create({
     },
     touchableButtonSignIn:{
       justifyContent: 'center',
-      marginBottom: 50
+      marginBottom: 50,
+      marginLeft:50,
+      marginRight:50
     },
     registrate:{
       marginTop: 10,

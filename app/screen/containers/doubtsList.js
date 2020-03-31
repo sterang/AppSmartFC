@@ -14,11 +14,6 @@ function mapStateToProps(state){
         ipconfig: state.videos.selectedIPConfig
     }
 }
-/**
- * Contains all about objects for doubts List
- * @class
- */
-
 class SuggestionList extends Component {
     renderEmpty=()=><Empty text="No hay materias asociadas al colegio"></Empty>
     itemSeparatos=()=><Separator text="No hay materias asociadas al colegio"></Separator>
@@ -34,7 +29,6 @@ class SuggestionList extends Component {
         )
     }
     keyExtractor = item=>item.id_duda.toString()
-    /** Render objects in a Screen of movil. */
     render(){
         var data = [];
         //console.log("Esto es para el filtro");

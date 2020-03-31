@@ -5,11 +5,6 @@ import { StyleSheet} from 'react-native';
 import API from '../../utils/api';
 import {connect} from 'react-redux';
 
-/**
- * Contains all about information the subject list screen
- * @class
- */
-
 class Home extends Component{
   static navigationOptions =({navigation})=>{
     return{
@@ -23,7 +18,6 @@ class Home extends Component{
           subject: [],
         }
       }
-      /**Load components for play contents */
       async componentDidMount(){
         console.log(this.props.ipconfig);
         console.log(this.props.student);
@@ -35,7 +29,6 @@ class Home extends Component{
           }
         })
       }
-      /** Render objects in a Screen of movil. */
     render(){
         return(
             <Fragment>

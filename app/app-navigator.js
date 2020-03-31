@@ -20,13 +20,12 @@ import CloseSession from './screen/containers/closeSession';
 import Profile from './screen/containers/Profile'
 import { createDrawerNavigator } from 'react-navigation-drawer';
 import { Ionicons , Octicons } from '@expo/vector-icons';
-
+import {BackHandler} from 'react-native';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 
-/**
-* A module that main screen 
-* @module Main
-*/
+function goodBye(){
+    BackHandler.exitApp();
+}
 const Main = createStackNavigator(
     {
         Home:
@@ -48,10 +47,6 @@ const Main = createStackNavigator(
         }
     }
 )
-/**
-* A module that load Profile Screen
-* @module Profiles
-*/
 const Profiles = createStackNavigator(
     {
         Profile: Profile,
@@ -60,10 +55,6 @@ const Profiles = createStackNavigator(
         initialRouteName: 'Profile',
     }
 )
-/**
-* A module that load Activities Screen
-* @module Activities
-*/
 const Activities = createStackNavigator(
     {
         Activity: Activity,
@@ -79,10 +70,6 @@ const Activities = createStackNavigator(
         initialRouteName: 'Activity',
     }
 )
-/**
-* A module that load Registro Screen
-* @module Notification
-*/
 const Notifications = createStackNavigator(
     {
         Notification: Login,
@@ -92,10 +79,6 @@ const Notifications = createStackNavigator(
         initialRouteName: 'Notification',
     }
 )
-/**
-* A module that load configurations about app
-* @module Configure
-*/
 const Configuration = createStackNavigator(
     {
         Configuracion: Configure
@@ -104,10 +87,6 @@ const Configuration = createStackNavigator(
         initialRouteName: 'Configuracion',
     }
 )
-/**
-* A module that load Doubt Screen
-* @module DoubtsActivity
-*/
 const DoubtsActivity = createStackNavigator(
     {
         DoubtsActivity: Doubts
@@ -116,11 +95,6 @@ const DoubtsActivity = createStackNavigator(
         initialRouteName: 'DoubtsActivity',
     }
 )
-/**
-* A module that load Admin Screen
-* @module AdminUSer
-*/
-
 const AdminUSer = createStackNavigator(
     {
         AdminUSer: adminUserData,
@@ -130,12 +104,6 @@ const AdminUSer = createStackNavigator(
         initialRouteName: 'AdminUSer',
     }
 )
-
-/**
-* A module that create the menu bar in app
-* @module DrawerNavigator
-*/
-
 
 const DrawerNavigator = createDrawerNavigator(
     {
@@ -160,13 +128,7 @@ const DrawerNavigator = createDrawerNavigator(
                 drawerIcon: <Ionicons name="md-browsers" size={28} color="white"/>
             }
         },
-        Login:{
-            screen:Notifications,
-            navigationOptions:{
-                title:'Dudas',
-                drawerIcon: <Ionicons name="md-notifications" size={28} color="white"/>
-            }
-        },
+        
         Configuracion:{
             screen:Configuration,
             navigationOptions:{
@@ -181,8 +143,9 @@ const DrawerNavigator = createDrawerNavigator(
                 drawerIcon: <Ionicons name="md-information-circle" size={28} color="white"/>
             }
         },
-        CloseSession:{
-            screen:Login,
+        
+        Login:{
+            screen:goodBye,
             navigationOptions:{
                 title:'Cerrar Sesion',
                 drawerIcon: <Ionicons name="md-information-circle" size={28} color="white"/>
@@ -206,10 +169,6 @@ const DrawerNavigator = createDrawerNavigator(
         
     }
 )
-/**
-* A module that create the navigation in Login, Students and Admin Screens
-* @module SwitchNavigator
-*/
 const SwitchNavigator = createSwitchNavigator(
     {
         Login:Notifications,
@@ -221,8 +180,4 @@ const SwitchNavigator = createSwitchNavigator(
       initialRouteName: 'Login',
     }
 )
-/**
-* A module that create all about navigation in app
-* @module createAppContainer
-*/
 export default createAppContainer(SwitchNavigator);

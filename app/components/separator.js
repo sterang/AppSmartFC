@@ -1,9 +1,6 @@
 import React from 'react';
 import {View,Text, StyleSheet} from 'react-native';
 
-/** @function VerticalSeparator */
-// Create the specific elements for separate content. 
-
 function VerticalSeparator (props){
     return(
         <View >

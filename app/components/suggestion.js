@@ -2,9 +2,6 @@ import React from 'react';
 import {View, Image, Text, StyleSheet,TouchableOpacity} from 'react-native';
 import { Video } from 'expo-av';
 import {connect} from 'react-redux';
-/** @function Suggestion*/
-// Create the specific elements for a specific screen. 
-
 function Suggestion(props){
     console.log("Imprimiendo URLs");
     
@@ -21,8 +18,7 @@ function Suggestion(props){
             
             <View style={styles.right}>
                 <Text style={styles.title}>{props.nombre_CREA}</Text>
-                <Text style={styles.teacher}>Teacher: Diego</Text>
-                <Text style={styles.curso}>Curso: {props.id_grado}</Text>
+                <Text style={styles.curso}>Grado: {props.id_grado}</Text>
             </View>
             </View>
         </TouchableOpacity>

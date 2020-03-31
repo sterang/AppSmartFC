@@ -9,10 +9,6 @@ import { Ionicons , Octicons } from '@expo/vector-icons';
 import {connect} from 'react-redux';
 
 const db = SQLite.openDatabase("db5.db");
-/**
- * Contains all about register student.
- * @class
- */
 
 class Register extends Component {
     static navigationOptions =({navigation})=>{
@@ -33,7 +29,6 @@ class Register extends Component {
         storage: null,
         students: null,
       }
-      /**Load all information about schools and students for register */
       async componentDidMount(){
         var query2 = await API.loadSchool(this.props.ipconfig);
         var query = await API.allStudent(this.props.ipconfig);
@@ -49,8 +44,9 @@ class Register extends Component {
               console.log(this.state.storage)
           );
       });
+
       }
-      /** Create a student in a server */
+      
       async Registrate(){
         console.log(this.state.grado);
         console.log(this.state.schoolSelected);
@@ -99,7 +95,6 @@ class Register extends Component {
           routeName: 'Notification'
       })) 
       }
-      /** Load the id about student*/
       idEstudiante(){
         console.log(this.state.grado);
         console.log("EscuelaID");
@@ -126,13 +121,11 @@ class Register extends Component {
           null
         );
       }
-      /** Return to the main screen*/
       close(){
         this.props.dispatch(NavigationActions.navigate({
           routeName: 'Notification'
         })) 
       }
-      /** Render objects in a Screen of movil. */
       render() {
         
         var datasSchoolFull = null;

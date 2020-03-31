@@ -1,9 +1,6 @@
 import React from 'react';
 import {Text,TouchableOpacity,StyleSheet} from 'react-native';
 
-/** @function Close */
-// Create the specific elements for the Close Screen. 
-
 function Close (props){
     return(
         <TouchableOpacity

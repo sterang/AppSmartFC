@@ -1,8 +1,5 @@
 import React from 'react';
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
-/** @function SuggestionListLayout */
-// Create the specific elements for a specific screen. 
-
 function SuggestionListLayout(props){
     return(
         <View style={styles.container}>

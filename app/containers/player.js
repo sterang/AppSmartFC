@@ -9,11 +9,6 @@ import {connect} from 'react-redux';
 
 const BASE_API_EVENTS ='http://192.168.190.51:3000/createEventos';
 
-/**
- * Contains all about objects for player a video content
- * @class
- */
-
 class Player extends Component{
   constructor(props) {
     super(props);
@@ -22,19 +17,16 @@ class Player extends Component{
     mute: false,
     shouldPlay: false,
   }
-  /** Play and Pause Process. */
   handlePlayAndPause = async() => {  
     this.setState((prevState) => ({
        shouldPlay: !prevState.shouldPlay  
     }));
   }
-  /** Volume about music player. */
   handleVolume = async() => {
     this.setState(prevState => ({
       mute: !prevState.mute,
     }));
   }
-  /** Load and download information about music or video. */
   componentDidMount = async () => {
     console.log(this.props.urlrepositorio);
     //const uri = this.props.urlrepositorio;
@@ -61,7 +53,6 @@ class Player extends Component{
       }
     });
   }
-  /** Render objects in a Screen of movil. */
   render() {
     //const url = this.props.descripcion_CREA;
     //console.log(this.props.descripcion_CREA);
@@ -73,6 +64,7 @@ class Player extends Component{
           resizeMode="cover"
           style={styles.video}
           isMuted={this.state.mute}
+          useNativeControls
         />
         <View style={styles.container}>
           <MaterialIcons name={this.state.mute ? "volume-mute" : "volume-up"} size={40} color="white" onPress={this.handleVolume} />

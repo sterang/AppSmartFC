@@ -25,11 +25,6 @@ var storageActividad = [{
   progresso: 0
 }];
 var active = "";
-/**
- * Contains all about Profile Screen.
- * @class
- */
-
 class Profile extends Component {
   static navigationOptions = ({ navigation }) => {
     return {
@@ -39,11 +34,34 @@ class Profile extends Component {
   state = {
     storage: []
   }
-  /**Load all about activities for student */
+  componentDidMount() {
+
+    db.transaction(tx => {
+      tx.executeSql(
+        "create table if not exists events (id_evento integer primary key not null, data_start text, hour_start text, data_end text, hour_end text, id_actividad int, id_estudiante int, check_download int, check_inicio int, check_fin int, check_answer int, count_video int, check_video int, check_document int, check_a1 int, check_a2 int, check_a3 int, check_profile int, check_Ea1 int, check_Ea2 int, check_Ea3 int );"
+      );
+      tx.executeSql(
+          "create table if not exists flatEvent (id_evento integer not null, upload int);"
+        );
+      tx.executeSql("select * from events", [], (_, { rows:{ _array } }) =>
+          this.setState({ storage: _array })
+      );
+      tx.executeSql(`select * from events where id_estudiante = ?;`, [this.props.student.id_estudiante], (_, { rows: { _array } }) =>
+        this.setState({ storage: _array })
+      );
+    });
+    console.log("Este es el Storage");
+    console.log(this.state.storage);
+    this.loadActivities();
+  }
+  
   async loadActivities() {
     active = "ESTOS SON SU PROGRESO EN LA ACTIVIDAD";
     console.log("ID Estudiante");
     console.log(this.props.student.id_estudiante);
+    //tx.executeSql(`select * from events where id_estudiante = ?;`, [this.props.student.id_estudiante], (_, { rows: { _array } }) =>
+    //tx.executeSql(`select * from events;`, null, (_, { rows: { _array } }) =>
+    this.consulta();
     db.transaction(tx => {
       tx.executeSql(`select * from events where id_estudiante = ?;`, [this.props.student.id_estudiante], (_, { rows: { _array } }) =>
         this.setState({ storage: _array }),
@@ -53,27 +71,10 @@ class Profile extends Component {
     storagesEvents = this.state.storage;
     console.log("Cargando Datos Eventos")
     console.log(storagesEvents);
-    for (var i = 0; i < this.state.storage.length; i++) {
-      for (var j = 0; j < actividades.length; j++) {
-        if (storagesEvents[i].id_actividad == actividades[j]) {
-          break;
-        }
-        else if (storagesEvents[i].id_actividad != actividades[j]) {
-          console.log("Cargando Actividades")
-          //console.log(storagesEvents[i].id_actividad);
-          actividades.push(storagesEvents[i].id_actividad);
-        }
-      }
-    }
-    console.log("Imprimiendo Actividades");
-    console.log(actividades);
     var activity = await API.getActivities(this.props.ipconfig);
-    this.props.dispatch({
-      type: 'SET_ACTIVITY_STUDENT',
-      payload: {
-        studentActivity: activity
-      }
-    })
+    //console.log("Trayendo todas las actividades");
+    //console.log(activity);
+    
     console.log("Capturando Eventos Por Actividad");
     var notaF = 0;
     var notaFEvaluation = 0;
@@ -97,7 +98,7 @@ class Profile extends Component {
           } else if (this.state.storage[i].check_a1 == activity[j].CA1 && this.state.storage[i].check_a2 != activity[j].CA2 && this.state.storage[i].check_a3 != activity[j].CA3) {
             notaF = 3;
           } else if (this.state.storage[i].check_a1 != activity[j].CA1 && this.state.storage[i].check_a2 != activity[j].CA2 && this.state.storage[i].check_a3 != activity[j].CA3) {
-            notaF = 2;
+            notaF = 0;
           } else {
             notaF = 0;
           }
@@ -117,7 +118,7 @@ class Profile extends Component {
           } else if (this.state.storage[i].check_Ea1 == activity[j].ECA1 && this.state.storage[i].check_Ea2 != activity[j].ECA2 && this.state.storage[i].check_Ea3 != activity[j].ECA3) {
             notaFEvaluation = 3;
           } else if (this.state.storage[i].check_Ea1 != activity[j].ECA1 && this.state.storage[i].check_Ea2 != activity[j].ECA2 && this.state.storage[i].check_Ea3 != activity[j].ECA3) {
-            notaFEvaluation = 2;
+            notaFEvaluation = 0;
           } else {
             notaFEvaluation = 0;
           }
@@ -167,15 +168,14 @@ class Profile extends Component {
     var elementoEliminado = resultado.splice(0, 1);
     console.log(elementoEliminado)
   }
-  /**Load all information about a specific student */
-  componentDidMount() {
+  consulta(){
     db.transaction(tx => {
       tx.executeSql(`select * from events where id_estudiante = ?;`, [this.props.student.id_estudiante], (_, { rows: { _array } }) =>
         this.setState({ storage: _array }),
-        console.log(this.state.storage)
+        //console.log(this.state.storage)
       );
     });
-    this.loadActivities();
+    console.log(this.state.storage);
   }
   keyExtractor = item => item.id_actividad.toString();
   renderItem = ({ item }) => {
@@ -183,7 +183,6 @@ class Profile extends Component {
       <ActivityEvents {...item} />
     )
   }
-  /** Render objects in a Screen of movil. */
   render() {
     console.log(this.props.student.id_estudiante);
     return (
@@ -192,7 +191,9 @@ class Profile extends Component {
           <Text style={styles.nombre}>{this.props.student.nombre_estudiante} {this.props.student.apellido_estudiante}</Text>
           <Text style={styles.correo}> Correo: {this.props.student.correo_electronico}</Text>
           <Text style={styles.grado}>  Grado: {this.props.student.grado_estudiante}</Text>
+          <Button title="Carga Datos" onPress={()=>this.loadActivities()}/>
           <Text style={styles.TextoDatos}>{active}</Text>
+          
         </View>
         <FlatList
           data={resultado}

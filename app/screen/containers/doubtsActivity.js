@@ -4,10 +4,6 @@ import SuggestionList from '../containers/doubtsList';
 import { StyleSheet, Text, View ,Button} from 'react-native';
 import API from '../../../utils/api';
 import {connect} from 'react-redux';
-/**
- * Contains all about objects for doubts
- * @class
- */
 
 class Home extends Component{
   static navigationOptions =({navigation})=>{
@@ -22,7 +18,6 @@ class Home extends Component{
           duda: [],
         }
       }
-      /** Load and download information about music or video. */
       async componentDidMount(){
           var data = {
               id_estudiante: this.props.student.id_estudiante
@@ -35,7 +30,6 @@ class Home extends Component{
           }
         })
       }
-      /** Render objects in a Screen of movil. */
     render(){
       console.log("Prueba")
       //console.log(this.props.student);

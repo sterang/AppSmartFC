@@ -8,13 +8,12 @@ import {connect} from 'react-redux';
 import RadioForm, {RadioButton, RadioButtonInput, RadioButtonLabel} from 'react-native-simple-radio-button';
 import * as SQLite from 'expo-sqlite';
 import API from '../../../utils/api';
+import RadioButtons from '../components/RadioButtons';
 //import Audio from '../../containers/audio-activity';
+
 const db = SQLite.openDatabase("db5.db");
-/**
- * Contains all about objects for Test Activity
- * @class
- */
 class testActivity extends Component{
+    
     
     state={
         opacity:new Animated.Value(0),
@@ -25,12 +24,21 @@ class testActivity extends Component{
         storageFlats: null,
         storageFilter:null
     }
+    getResponse(value){
+        this.setState({value1:value});
+    }
+    getResponse2(value){
+        this.setState({value2:value});
+    }
+    getResponse3(value){
+        this.setState({value3:value});
+    }
+
     static navigationOptions=({navigation})=>{
         return{ 
             header: (<HeaderReturn onPress={()=>navigation.goBack()}>Realiza tu test</HeaderReturn>)
         }
     }
-    /** Load all components for test */
     componentDidMount(){
         Animated.timing(
             this.state.opacity,{
@@ -60,7 +68,6 @@ class testActivity extends Component{
               );
         });
     }
-    /** Update Flats for metrics */
     updateFlat(){
         db.transaction(tx => {
             tx.executeSql(
@@ -71,7 +78,6 @@ class testActivity extends Component{
           });
         console.log(this.state.storageFlats);
     }
-    /** Update metrics in a database*/
     update() {
         db.transaction(tx => {
           tx.executeSql(
@@ -98,8 +104,8 @@ class testActivity extends Component{
           });
           this.updateFlat();
       }
-      /** Storage a Evaluation with metrics*/
     storageTest() {
+
         var date = new Date().getDate();
         var month = new Date().getMonth() + 1;
         var year = new Date().getFullYear();
@@ -148,36 +154,59 @@ class testActivity extends Component{
                         check_Ea2: storageFilter.find(s => s.id_actividad === id_actividad).check_Ea2,
                         check_Ea3: storageFilter.find(s => s.id_actividad === id_actividad).check_Ea3,
                         check_download: storageFilter.find(s => s.id_actividad === id_actividad).check_download,
-                        id_evento: storageFilter.find(s => s.id_actividad === id_actividad).id_evento,
+                        check_answer: storageFilter.find(s => s.id_actividad === id_actividad).check_answer,
                     };
                 });
         }
-        db.transaction(
-            tx => {
-                tx.executeSql("insert into events (data_start, hour_start, data_end, hour_end, id_actividad, id_estudiante, check_download, check_inicio, check_fin, check_answer, count_video, check_video, check_document, check_a1, check_a2, check_a3, check_profile, check_Ea1, check_Ea2, check_Ea3) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?)",
-                    [dataComplete, hoursComplete, dataComplete, hoursComplete, this.props.activity.id_actividad, this.props.student.id_estudiante, resultado[0].check_download, resultado[0].check_inicio, 0, 1, resultado[0].count_video, resultado[0].check_video, 0, this.state.value1, this.state.value2, this.state.value3, 0, resultado[0].check_Ea1, resultado[0].check_Ea2, resultado[0].check_Ea2]);
-            },
-            null,
-            null
-        );
-        db.transaction(tx => {
-            tx.executeSql(
-                `select * from events ;`,
-                [],
-                (_, { rows: { _array } }) => this.setState({ storage: _array })
+        if(resultado[0].check_answer==0){
+            db.transaction(
+                tx => {
+                    tx.executeSql("insert into events (data_start, hour_start, data_end, hour_end, id_actividad, id_estudiante, check_download, check_inicio, check_fin, check_answer, count_video, check_video, check_document, check_a1, check_a2, check_a3, check_profile, check_Ea1, check_Ea2, check_Ea3) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?)",
+                        [dataComplete, hoursComplete, dataComplete, hoursComplete, this.props.activity.id_actividad, this.props.student.id_estudiante, resultado[0].check_download, resultado[0].check_inicio, 0, 1, resultado[0].count_video, resultado[0].check_video, 0, this.state.value1, this.state.value2, this.state.value3, 0, resultado[0].check_Ea1, resultado[0].check_Ea2, resultado[0].check_Ea2]);
+                },
+                null,
+                null
             );
-        });
-        //console.log(this.state.storage [this.state.storage.length-1]);
-        this.update();
+            db.transaction(tx => {
+                tx.executeSql(
+                    `select * from events ;`,
+                    [],
+                    (_, { rows: { _array } }) => this.setState({ storage: _array })
+                );
+            });
+            //console.log(this.state.storage [this.state.storage.length-1]);
+            this.update();
+            Alert.alert(
+                'Almacenamiento Exitoso',
+                'Sus respuestas han sido almacenadas recuerde sincronizar con su servidor cuando este en el colegio',
+                [
+                  { text: 'OK', onPress: () => console.log('OK Pressed') },
+                ],
+                { cancelable: false }
+            );
+            this.regresaMateria();
+    
+        }else if (resultado[0].check_answer==1){
+            Alert.alert(
+                'Información!',
+                'Sus respuestas ya fueron guardadas recuerde que solo dispone de un solo intento',
+                [
+                  { text: 'OK', onPress: () => console.log('OK Pressed') },
+                ],
+                { cancelable: false }
+            );
+        }else{
+            console.log("No carga nada");
+        }
+
+        
     }
-    /** Update Metrics in a database in a States*/
     consulta(){
         db.transaction(tx => {
             tx.executeSql(`drop table events;`, [26]);
         });
         console.log(this.state.storage [this.state.storage.length-1]);
     }
-    /** Send information to a server with all metrics about one activity and specific student*/
     async sendServer (){
         //this.consulta();
         db.transaction(tx => {
@@ -204,7 +233,7 @@ class testActivity extends Component{
                     if(Flats[i].id_evento == data[j].id_evento){
                         var queryApi = await API.loadEventsLast(this.props.ipconfig);
                         queryApi = queryApi+1;
-                        var id_estudianteF = ""+this.props.student.id_colegio + this.props.student.id_estudiante + queryApi;
+                        var id_estudianteF = ""+this.props.student.id_estudiante + queryApi;
                         var id_estudianteF = parseInt(id_estudianteF);
                         data[j].id_evento= id_estudianteF;
                         var id_eventoFs = Flats[j].id_evento;
@@ -227,64 +256,55 @@ class testActivity extends Component{
         }
         console.log(data);
         console.log(query2);
+        Alert.alert(
+            'Sincronización exitosa',
+            'La sincronización de respuestas fue exitosa',
+            [
+                { text: 'OK', onPress: () => console.log('OK Pressed') },
+            ],
+            { cancelable: false }
+        );
+        
     }
-    /**Return to a select moment in a activity */
     regresaMateria(){
         this.props.dispatch(NavigationActions.navigate({
-            routeName: 'SelectMoment'
+            routeName: 'Activity'
         })) 
     }
-    /** Render objects in a Screen of movil. */
     render(){
         console.log("Trayendo al Estudiante");
         console.log(this.props.student.id_estudiante);
         var Question_One = [
-            {label: this.props.activity.A11, value: 1 },
-            {label: this.props.activity.A12, value: 2 },
-            {label: this.props.activity.A13, value: 3 },
-            {label: this.props.activity.A14, value: 4 }
+            {text: this.props.activity.A11, key: 1 },
+            {text: this.props.activity.A12, key: 2 },
+            {text: this.props.activity.A13, key: 3 },
+            {text: this.props.activity.A14, key: 4 }
         ];
         var Question_Two = [
-            {label: this.props.activity.A21, value: 1 },
-            {label: this.props.activity.A22, value: 2 },
-            {label: this.props.activity.A23, value: 3 },
-            {label: this.props.activity.A24, value: 4 }
+            {text: this.props.activity.A21, key: 1 },
+            {text: this.props.activity.A22, key: 2 },
+            {text: this.props.activity.A23, key: 3 },
+            {text: this.props.activity.A24, key: 4 }
         ];
         var Question_Three = [
-            {label: this.props.activity.A31, value: 1 },
-            {label: this.props.activity.A32, value: 2 },
-            {label: this.props.activity.A33, value: 3 },
-            {label: this.props.activity.A34, value: 4 }
+            {text: this.props.activity.A31, key: 1 },
+            {text: this.props.activity.A32, key: 2 },
+            {text: this.props.activity.A33, key: 3 },
+            {text: this.props.activity.A34, key: 4 }
         ];
         console.log("Abriendo PlayContents")
         console.log(this.props.activity.video);
         return (
             <ScrollView style={styles.container}>
                 <Text style={styles.texto}>{this.props.activity.Q1}</Text>
-                <RadioForm
-                    radio_props={Question_One}
-                    initial={0}
-                    onPress={(value) => { this.setState({ value1: value }) }}
-                    labelColor={'#9C9C9C'}
-                />
+                <RadioButtons options={Question_One} callback={this.getResponse.bind(this)}/>
                 <Text style={styles.texto}>{this.props.activity.Q2}</Text>
-                <RadioForm
-                    radio_props={Question_Two}
-                    initial={0}
-                    onPress={(value) => { this.setState({ value2: value }) }}
-                    labelColor={'#9C9C9C'}
-                />
-                <Text style={styles.texto}>{this.props.activity.Q3}</Text>
-                <RadioForm
-                    radio_props={Question_Three}
-                    initial={0}
-                    onPress={(value) => { this.setState({ value3: value }) }}
-                    labelColor={'#9C9C9C'}
-                />
-
-                <Button title="Enviar" style={styles.buttonstyle} onPress={()=>this.storageTest()}/>
+                <RadioButtons options={Question_Two} callback={this.getResponse2.bind(this)}/>
+                <Text style={styles.texto}>{this.props.activity.Q3}</Text>Mira quQue
+                <RadioButtons options={Question_Three} callback={this.getResponse3.bind(this)}/>
+                <Button title="Guardar" style={styles.buttonstyle} onPress={()=>this.storageTest()}/>
                 <Button title="Sincronizar" style={styles.buttonstyle} onPress={()=>this.sendServer()}/>
-                <Button title="Regresa a Tus Materias" style={styles.buttonstyle} onPress={()=>this.regresaMateria()}/>
+                <Button title="Regresa a Materias" style={styles.buttonstyle} onPress={()=>this.regresaMateria()}/>
             </ScrollView>
         );
         

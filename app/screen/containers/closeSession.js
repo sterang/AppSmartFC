@@ -3,12 +3,7 @@ import {NavigationActions} from 'react-navigation';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import {connect} from 'react-redux';
-/**
- * Contains all about objects for close sesion
- * @class
- */
 class CloseSession extends Component {
-  /** Load student for null. */
     componentDidMount(){
       this.props.dispatch({
         type: 'SET_STUDENT',
@@ -20,7 +15,6 @@ class CloseSession extends Component {
         routeName: 'Login'
       }))
     }
-    /** Load student for null. */
     componentWillUpdate(){
       this.props.dispatch({
         type: 'SET_STUDENT',
@@ -32,7 +26,6 @@ class CloseSession extends Component {
         routeName: 'Login'
       }))
     }
-    /** Load student for null. */
     closeSesion(){
       this.props.dispatch({
         type: 'SET_STUDENT',
@@ -44,7 +37,6 @@ class CloseSession extends Component {
         routeName: 'Login'
       }))
     }
-    /** Render objects in a Screen of movil. */
     render() {
       this.closeSesion();
       //console.log(this.props.navigation);

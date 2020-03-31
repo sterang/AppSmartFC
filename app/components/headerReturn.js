@@ -1,9 +1,6 @@
 import React from 'react';
 import {View, Text, Image, StyleSheet, SafeAreaView, TouchableOpacity} from 'react-native'
 import { Ionicons , Octicons } from '@expo/vector-icons';
-/** @function HeaderReturn */
-// Create the specific elements for the return a another screen. 
-
 function HeaderReturn (props){
     return(
         <View>

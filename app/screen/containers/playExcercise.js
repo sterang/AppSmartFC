@@ -12,10 +12,6 @@ import shorthash from 'shorthash';
 import {NavigationActions} from 'react-navigation';
 import Reader from '../../containers/reader-excersise';
 import HeaderReturn from '../../components/headerReturn';
-/**
- * Contains all about information for play a excercise.
- * @class
- */
 
 class playExcercise extends Component{
     state={
@@ -26,7 +22,6 @@ class playExcercise extends Component{
             header: (<HeaderReturn onPress={()=>navigation.goBack()}>Visualiza tu contenido</HeaderReturn>)
         }
     }
-    /** Load Animation for Movil Screen  */
     componentDidMount(){
         Animated.timing(
             this.state.opacity,{
@@ -35,7 +30,6 @@ class playExcercise extends Component{
             }
         ).start();
     }
-    /** Render objects in a Screen of movil. */
     render(){
         console.log("Abriendo PlayContents")
         console.log(this.props.activity.video);

@@ -4,17 +4,12 @@ import Header from '../../components/header';
 import {connect} from 'react-redux';
 
 import Reading from '../../components/reading';
-/**
- * Contains all about information the Activities screen and create objects.
- * @class
- */
 class Activities extends Component {
   static navigationOptions =({navigation})=>{
     return{
       header: <Header onPress={()=>navigation.openDrawer()}>Mis Cursos</Header>,
     }
   }
-  /** Render objects in a Screen of movil. */
   render() {
       return (
         <View style={styles.container}>

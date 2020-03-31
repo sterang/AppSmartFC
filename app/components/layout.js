@@ -1,7 +1,5 @@
 import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
-/** @function Layout */
-// Create the specific elements for the layout in a screen. 
 
 function Layout(props){
     return(

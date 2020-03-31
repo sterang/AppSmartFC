@@ -1,9 +1,6 @@
 import React from 'react';
 import {View, Image, Text, StyleSheet,TouchableOpacity} from 'react-native';
 import {connect} from 'react-redux';
-/** @function Suggestion*/
-// Create the specific elements for a specific screen. 
-
 function Suggestion(props){
     console.log("Imprimiendo URLs");
     return(

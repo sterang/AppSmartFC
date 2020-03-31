@@ -1,8 +1,6 @@
 import React from 'react';
 import {View, Text, StyleSheet,TouchableOpacity} from 'react-native';
 import * as Progress from 'react-native-progress';
-/** @function Suggestion */
-// Create the specific elements for the profile screen. 
 
 function Suggestion(props){
     return(

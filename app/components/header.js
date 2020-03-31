@@ -1,9 +1,6 @@
 import React from 'react';
 import {View, Text, Image, StyleSheet, SafeAreaView, TouchableOpacity} from 'react-native'
 import { Ionicons , Octicons } from '@expo/vector-icons';
-/** @function Header */
-// Create the specific elements for the menu. 
-
 function Header (props){
     return(
         <View>

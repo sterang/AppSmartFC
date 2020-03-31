@@ -1,8 +1,7 @@
 import React,{Component} from 'react';
 import { StyleSheet, Text, View, Button, WebView , Linking} from 'react-native';
 
-/** @function Reading */
-// Create the specific elements for the reading screen. 
+
 
 function Reading (props){
     _handlePress = () => {
